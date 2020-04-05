@@ -1,28 +1,71 @@
 import { getId } from './commonUtil'
+import { useState } from 'react'
 
 // List stored in localStorage.true_layer_todos = {}
 const key = 'true_layer_todos'
 
-const setItems = (items) => {
+// LocalStorage getters and setters
+const setItemsLocalStorage = (items) => {
   localStorage.setItem(key, JSON.stringify(items))
 }
 
-export const createTodo = ({ name, description }) => {
+const getItemsLocalStorage = () => {
+  return localStorage.getItem(key)
+}
+
+// In memory
+export const useInMemoryTodos = (initialList = {}) => {
+  const [todos, setTodos] = useState({...initialList})
+
+  return {
+    createTodo(todo) {
+      setTodos({ ...todos, [todo.id]: todo })
+    },
+    updateTodo(todo) {
+      setTodos({ ...todos, [todo.id]: todo })
+    },
+    deleteTodo(id) {
+      const newTodos = {...todos}
+      delete newTodos[id]
+      setTodos(newTodos)
+    },
+    getTodos() {
+      return todos
+    },
+    createInitialList(todos) {
+      return setTodos(todos)
+    }
+  }
+}
+
+// Create
+export const createTodoLocal = ({ name, description }) => {
+  return createTodo({ name, description }, getTodosLocal, setItemsLocalStorage)
+}
+
+const createTodo = ({ name, description }, getTodos, setItems) => {
   const items = getTodos()
 
   const id = getId()
-  items[id] = {
+  const item = {
     id,
     name,
     description,
     created: Date.now(),
   }
+  items[id] = item
 
   setItems(items)
+  return item
 }
 
-export const getTodos = () => {
-  const items = localStorage.getItem(key)
+// Get todos
+export const getTodosLocal = () => {
+  return getTodos(getItemsLocalStorage, setItemsLocalStorage)
+}
+
+const getTodos = (getItems, setItems) => {
+  const items = getItems()
   if (!items) {
     setItems({})
   }
@@ -30,18 +73,34 @@ export const getTodos = () => {
   return JSON.parse(items || '{}')
 }
 
-export const getTodo = (id) => {
+// Get todo
+export const getTodoLocal = (id) => {
+  return getTodo(id, getTodosLocal)
+}
+
+const getTodo = (id, getTodos) => {
   const items = getTodos()
   return items[id]
 }
 
-export const deleteTodo = (id) => {
+// Delete
+export const deleteTodoLocal = (id) => {
+  return deleteTodo(id, setItemsLocalStorage, getTodosLocal)
+}
+const deleteTodo = (id, setItems, getTodos) => {
   let items = getTodos()
   delete items[id]
   setItems(items)
+
+  return id
 }
 
-export const updateTodo = (data) => {
+// Update
+export const updateTodoLocal = (data) => {
+  return updateTodo(data, setItemsLocalStorage, getTodosLocal)
+}
+
+const updateTodo = (data, setItems, getTodos) => {
   const id = data.id
   const created = data.created
   if (!id) {
@@ -54,7 +113,9 @@ export const updateTodo = (data) => {
     throw new Error('Could not find existing item to update')
   }
 
-  items[id] = { ...item, ...data, id, created }
+  const updatedItem = { ...item, ...data, id, created }
+  items[id] = updatedItem
 
   setItems(items)
+  return updatedItem
 }

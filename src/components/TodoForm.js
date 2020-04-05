@@ -1,4 +1,14 @@
 import React, { useState } from 'react'
+import styled from 'styled-components'
+
+const Input = styled.input`
+  background-color: transparent;
+  color: white;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-width: 1px;
+`
 
 export default ({
   onSave,
@@ -12,14 +22,14 @@ export default ({
   return (
     <>
       <div>name</div>
-      <input
+      <Input
         value={name}
         onChange={(e) => {
           setName(e.target.value)
         }}
       />
       <div>description</div>
-      <input
+      <Input
         value={description}
         onChange={(e) => {
           setDescription(e.target.value)

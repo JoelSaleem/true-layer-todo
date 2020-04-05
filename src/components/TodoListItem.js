@@ -1,11 +1,18 @@
 import React, { useState } from 'react'
+import styled from 'styled-components'
 import TodoForm from './TodoForm'
-import { updateTodo, deleteTodo } from '../utilities/todoCrud'
+import { updateTodoLocal, deleteTodoLocal } from '../utilities/todoCrud'
 
-export default ({ name, description, id, rerender }) => {
+const Container = styled.div`
+  padding-top: 4px;
+  padding-bottom: 4px;
+  text-overflow: ellipsis;
+`
+
+export default ({ name, description, id, rerender, events, disabled }) => {
   const [isEditing, setIsEdit] = useState(false)
 
-  if (isEditing) {
+  if (isEditing && !disabled) {
     return (
       <>
         <TodoForm
@@ -13,7 +20,11 @@ export default ({ name, description, id, rerender }) => {
           description={description}
           onSaveText='Update'
           onSave={(todo) => {
-            updateTodo({ ...todo, id })
+            const updatedTodo = updateTodoLocal({ ...todo, id })
+
+            const updateType = events && events.getTypes().UPDATE
+            events && events.addEvent(updateType, updatedTodo)
+
             setIsEdit(false)
             rerender()
           }}
@@ -21,7 +32,11 @@ export default ({ name, description, id, rerender }) => {
         <button onClick={() => setIsEdit(false)}>Cancel</button>
         <button
           onClick={() => {
-            deleteTodo(id)
+            deleteTodoLocal(id)
+
+            const deleteType = events && events.getTypes().DELETE
+            events && events.addEvent(deleteType, id)
+
             setIsEdit(false)
             rerender()
           }}
@@ -33,9 +48,16 @@ export default ({ name, description, id, rerender }) => {
   }
 
   return (
-    <div onClick={() => setIsEdit(true)}>
+    <Container
+      onClick={() => {
+        if (disabled) {
+          return
+        }
+        setIsEdit(true)
+      }}
+    >
       <div>Name: {name}</div>
       <div>Desc: {description}</div>
-    </div>
+    </Container>
   )
 }

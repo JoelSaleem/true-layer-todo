@@ -15,10 +15,17 @@ export const getRecordings = () => {
   return JSON.parse(items || '{}')
 }
 
-export const createRecording = () => {}
-
-export const startRecording = () => {}
-export const stopRecording = () => {}
+export const createRecording = ({ startTime, endTime, name }) => {
+  const items = getRecordings()
+  const id = getId()
+  items[id] = {
+    id,
+    name,
+    endTime,
+    startTime,
+  }
+  setItems(items)
+}
 
 export const clearRecording = () => {}
 
