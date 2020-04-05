@@ -34,7 +34,11 @@ export default () => {
           const initialListType = events.getTypes().INITIAL_LIST
           events.addEvent(initialListType, getTodosLocal())
         }}
-        stopRecording={stopRecording}
+        stopRecording={() => {
+          events.persist()
+          stopRecording()
+        }
+        }
         togglePlaying={toggleIsPlaying}
       />
 
@@ -42,7 +46,7 @@ export default () => {
 
       {isPlaying && (
         <Replay
-          events={events && events.events}
+          events={events && events.getEvents()}
           eventTypes={events.getTypes()}
           toggleIsPlaying={toggleIsPlaying}
         />

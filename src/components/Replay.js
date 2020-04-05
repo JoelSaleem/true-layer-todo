@@ -37,7 +37,7 @@ export default ({ events = [], eventTypes, toggleIsPlaying }) => {
           createInitialList(currEvent.data)
           break
       }
-    } else if (idx >= events.length + 3) {
+    } else if (idx >= events.length + 2) {
         toggleIsPlaying()
     }
   }, 1000)

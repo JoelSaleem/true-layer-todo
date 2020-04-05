@@ -9,7 +9,7 @@ export default ({ isRecording, startRecording, stopRecording, togglePlaying, isP
   })
   return (
     <>
-      <button onClick={startRecording} disabled={isRecording}>
+      <button onClick={startRecording} disabled={isRecording || isPlaying}>
         Start Rec
       </button>
       <button onClick={stopRecording} disabled={!isRecording}>
