@@ -12,7 +12,6 @@ export default ({ events = [], eventTypes, toggleIsPlaying }) => {
     createInitialList,
   } = useInMemoryTodos()
 
-  
   const [idx, setIdx] = useState(0)
   const recordedEvents = events.sort((a, b) => {
     return a.created > b.created
@@ -47,7 +46,7 @@ export default ({ events = [], eventTypes, toggleIsPlaying }) => {
 
   return (
     <div>
-      Replay
+      <h3>Replay</h3>
       {todos.map(({ name, description, id }) => {
         return (
           <TodoListItem

@@ -1,5 +1,4 @@
 import React from 'react'
-import { getRecordings } from '../utilities/recordings'
 import Button from './TemplateComponents/Button'
 import styled from 'styled-components'
 
@@ -18,10 +17,6 @@ export default ({
   togglePlaying,
   isPlaying,
 }) => {
-  const recordings = getRecordings()
-  const recordingsList = Object.values(recordings).sort((a, b) => {
-    return a.startTime > b.startTime
-  })
   return (
     <MenuLayout>
       <ButtonContainer>
@@ -37,11 +32,8 @@ export default ({
       </ButtonContainer>
 
       <ButtonContainer>
-        <Button
-          disabled={isRecording || isPlaying}
-          onClick={() => togglePlaying()}
-        >
-          Play
+        <Button disabled={isRecording} onClick={() => togglePlaying()}>
+          {isPlaying ? 'Stop' : 'Play'}
         </Button>
       </ButtonContainer>
     </MenuLayout>
