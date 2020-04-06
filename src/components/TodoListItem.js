@@ -2,11 +2,17 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import TodoForm from './TodoForm'
 import { updateTodoLocal, deleteTodoLocal } from '../utilities/todoCrud'
+import ItemCard from './TemplateComponents/ItemCard'
+import Button from './TemplateComponents/Button'
 
-const Container = styled.div`
-  padding-top: 4px;
-  padding-bottom: 4px;
+const InfoField = styled.div`
+  overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
+`
+
+const FormButtonWrapper = styled.div`
+  padding-top: 12px;
 `
 
 export default ({ name, description, id, rerender, events, disabled }) => {
@@ -29,26 +35,29 @@ export default ({ name, description, id, rerender, events, disabled }) => {
             rerender()
           }}
         />
-        <button onClick={() => setIsEdit(false)}>Cancel</button>
-        <button
-          onClick={() => {
-            deleteTodoLocal(id)
+        <FormButtonWrapper>
+          <Button onClick={() => setIsEdit(false)}>Cancel</Button>
+          <Button
+            className='delete-btn'
+            onClick={() => {
+              deleteTodoLocal(id)
 
-            const deleteType = events && events.getTypes().DELETE
-            events && events.addEvent(deleteType, id)
+              const deleteType = events && events.getTypes().DELETE
+              events && events.addEvent(deleteType, id)
 
-            setIsEdit(false)
-            rerender()
-          }}
-        >
-          Delete
-        </button>
+              setIsEdit(false)
+              rerender()
+            }}
+          >
+            Delete
+          </Button>
+        </FormButtonWrapper>
       </>
     )
   }
 
   return (
-    <Container
+    <ItemCard
       onClick={() => {
         if (disabled) {
           return
@@ -56,8 +65,8 @@ export default ({ name, description, id, rerender, events, disabled }) => {
         setIsEdit(true)
       }}
     >
-      <div>Name: {name}</div>
-      <div>Desc: {description}</div>
-    </Container>
+      <InfoField>Name: {name}</InfoField>
+      <InfoField>Desc: {description}</InfoField>
+    </ItemCard>
   )
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { createGlobalStyle, ThemeProvider } from 'styled-components'
+import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
 import CoreLayout from './components/CoreLayout'
 import Card from './components/TemplateComponents/Card'
 
@@ -9,6 +9,7 @@ const theme = {
   backgroundHighlight: '#454545',
   backgroundHighlight2: '#7d7d7d',
   backgroundHighlight3: '#bfbfbf',
+  dangerColour: '#ff3030',
   textColour: 'white'
 }
 
@@ -19,14 +20,23 @@ const GlobalStyle = createGlobalStyle`
   }
 `
 
+const AppContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  min-width: 250px;
+`
+
 const App = () => {
   return (
     <>
+      <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        <Card>
-          <CoreLayout />
-        </Card>
+        <AppContainer>
+          <Card>
+            <CoreLayout />
+          </Card>
+        </AppContainer>
       </ThemeProvider>
     </>
   )

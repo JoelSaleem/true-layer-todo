@@ -1,14 +1,18 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import Button from './TemplateComponents/Button'
 
 const Input = styled.input`
   background-color: transparent;
-  color: ${({theme}) => theme.textColour};
+  color: ${({ theme }) => theme.textColour};
   border-top: none;
   border-left: none;
   border-right: none;
   border-width: 1px;
+  width: 100%;
 `
+
+const Container = styled.div``
 
 export default ({
   onSave,
@@ -20,28 +24,30 @@ export default ({
   const [description, setDescription] = useState(defaultDesc || '')
 
   return (
-    <>
-      <div>name</div>
+    <Container>
+      <div>Name</div>
       <Input
         value={name}
         onChange={(e) => {
           setName(e.target.value)
         }}
       />
-      <div>description</div>
+      <div>Description</div>
       <Input
         value={description}
         onChange={(e) => {
           setDescription(e.target.value)
         }}
       />
-      <button
-        onClick={() => {
-          onSave({ name, description })
-        }}
-      >
-        {onSaveText}
-      </button>
-    </>
+      <div>
+        <Button
+          onClick={() => {
+            onSave({ name, description })
+          }}
+        >
+          {onSaveText}
+        </Button>
+      </div>
+    </Container>
   )
 }

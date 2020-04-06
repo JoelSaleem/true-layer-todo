@@ -6,4 +6,7 @@ export default styled.div`
     0 18px 36px -18px rgba(0, 0, 0, 0.3), 0 -12px 36px -8px rgba(0, 0, 0, 0.025);
   border-radius: 8px;
   padding: 10px;
+  min-width: 250px;
+  max-width: 850px;
+  flex: 1;
 `
