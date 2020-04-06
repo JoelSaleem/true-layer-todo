@@ -26,7 +26,3 @@ export const createRecording = ({ startTime, endTime, name }) => {
   }
   setItems(items)
 }
-
-export const clearRecording = () => {}
-
-export const playRecording = () => {}

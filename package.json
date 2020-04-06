@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "jest": {
+    "setupFilesAfterEnv": ["./src/setupTests.js"]
+  },
   "scripts": {
     "test": "jest",
     "build": "webpack --mode production",
@@ -33,6 +36,8 @@
     "babel-loader": "^8.1.0",
     "babel-plugin-styled-components": "^1.10.7",
     "css-loader": "^3.4.2",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
     "html-webpack-plugin": "^4.0.4",
     "jest": "^25.2.7",
     "now": "^17.1.1",

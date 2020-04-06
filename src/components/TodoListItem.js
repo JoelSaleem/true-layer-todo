@@ -58,6 +58,7 @@ export default ({ name, description, id, rerender, events, disabled }) => {
 
   return (
     <ItemCard
+      id='list-item'
       onClick={() => {
         if (disabled) {
           return

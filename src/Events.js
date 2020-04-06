@@ -25,6 +25,7 @@ export default class Events {
 
   clearEvents() {
     this.events = []
+    this.persist()
   }
 
   persist() {
