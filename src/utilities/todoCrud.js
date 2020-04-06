@@ -2,7 +2,7 @@ import { getId } from './commonUtil'
 import { useState } from 'react'
 
 // List stored in localStorage.true_layer_todos = {}
-const key = 'true_layer_todos'
+export const key = 'true_layer_todos'
 
 // LocalStorage getters and setters
 const setItemsLocalStorage = (items) => {
@@ -102,17 +102,17 @@ export const updateTodoLocal = (data) => {
 
 const updateTodo = (data, setItems, getTodos) => {
   const id = data.id
-  const created = data.created
   if (!id) {
     throw new Error('An Id for the todo must be provided')
   }
-
+  
   const items = getTodos()
   const item = items[id]
   if (!item) {
     throw new Error('Could not find existing item to update')
   }
-
+  const created = item.created
+  
   const updatedItem = { ...item, ...data, id, created }
   items[id] = updatedItem
 
