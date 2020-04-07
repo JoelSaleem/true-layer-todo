@@ -7,14 +7,27 @@ import useRerender from '../hooks/useRerender'
 export default ({ events }) => {
   const rerender = useRerender()
 
+  // Get todos from localStorage
   let todos = getTodosLocal()
   const todosList = Object.values(todos).sort((a, b) => {
     return a.created > b.created
   })
 
+  const onCreateTodo = (todo) => {
+    const createdTodo = createTodoLocal(todo)
+
+    if (events) {
+      // Publish create for replay
+      const createType = events.getTypes().CREATE
+      events.addEvent(createType, createdTodo)
+    }
+    rerender()
+  }
+
   return (
     <div>
       <h3>Todos list</h3>
+
       {todosList.map((todo) => {
         return (
           <TodoListItem
@@ -25,16 +38,8 @@ export default ({ events }) => {
           />
         )
       })}
-      <TodoForm
-        onSave={(todo) => {
-          const createdTodo = createTodoLocal(todo)
 
-          const createType = events && events.getTypes().CREATE
-          events && events.addEvent(createType, createdTodo)
-          rerender()
-        }}
-        onSaveText='Create'
-      />
+      <TodoForm onSave={onCreateTodo} onSaveText='Create' />
     </div>
   )
 }

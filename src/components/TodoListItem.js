@@ -15,40 +15,54 @@ const FormButtonWrapper = styled.div`
   padding-top: 12px;
 `
 
-export default ({ name, description, id, rerender, events, disabled }) => {
-  const [isEditing, setIsEdit] = useState(false)
+export default ({
+  name,
+  description,
+  id,
+  rerender,
+  events,
+  disabled,
+  className,
+}) => {
+  const [isEditing, setIsEditing] = useState(false)
+
+  const onTodoUpdated = (todo) => {
+    const updatedTodo = updateTodoLocal({ ...todo, id })
+    if (events) {
+      // Publish update for replay
+      const updateType = events.getTypes().UPDATE
+      events.addEvent(updateType, updatedTodo)
+    }
+    setIsEditing(false)
+    rerender()
+  }
+
+  const onTodoDeleted = () => {
+    deleteTodoLocal(id)
+    if (events) {
+      // Publist delete for replay
+      const deleteType = events.getTypes().DELETE
+      events.addEvent(deleteType, id)
+    }
+    setIsEditing(false)
+    rerender()
+  }
 
   if (isEditing && !disabled) {
+    // Show Edit form
     return (
       <>
         <TodoForm
           name={name}
           description={description}
           onSaveText='Update'
-          onSave={(todo) => {
-            const updatedTodo = updateTodoLocal({ ...todo, id })
-
-            const updateType = events && events.getTypes().UPDATE
-            events && events.addEvent(updateType, updatedTodo)
-
-            setIsEdit(false)
-            rerender()
-          }}
+          onSave={onTodoUpdated}
         />
+
         <FormButtonWrapper>
-          <Button onClick={() => setIsEdit(false)}>Cancel</Button>
-          <Button
-            className='delete-btn'
-            onClick={() => {
-              deleteTodoLocal(id)
+          <Button onClick={() => setIsEditing(false)}>Cancel</Button>
 
-              const deleteType = events && events.getTypes().DELETE
-              events && events.addEvent(deleteType, id)
-
-              setIsEdit(false)
-              rerender()
-            }}
-          >
+          <Button className='delete-btn' onClick={onTodoDeleted}>
             Delete
           </Button>
         </FormButtonWrapper>
@@ -56,14 +70,15 @@ export default ({ name, description, id, rerender, events, disabled }) => {
     )
   }
 
+  // Show uneditable todo 
   return (
     <ItemCard
+      className={className}
       id='list-item'
       onClick={() => {
-        if (disabled) {
-          return
+        if (!disabled) {
+          setIsEditing(true)
         }
-        setIsEdit(true)
       }}
     >
       <InfoField>Name: {name}</InfoField>

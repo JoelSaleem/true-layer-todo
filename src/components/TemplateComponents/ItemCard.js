@@ -10,4 +10,8 @@ export default styled.div`
   background-color: ${({ theme }) => theme.backgroundHighlight2};
   border-radius: 8px;
   cursor: pointer;
+
+  &.unclickable {
+    cursor: default;
+  }
 `

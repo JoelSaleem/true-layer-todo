@@ -32,6 +32,7 @@ export default ({
           setName(e.target.value)
         }}
       />
+
       <div>Description</div>
       <Input
         value={description}
@@ -39,6 +40,7 @@ export default ({
           setDescription(e.target.value)
         }}
       />
+
       <div>
         <Button
           onClick={() => {

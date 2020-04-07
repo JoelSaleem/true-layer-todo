@@ -13,16 +13,20 @@ export default ({ events = [], eventTypes, toggleIsPlaying }) => {
   } = useInMemoryTodos()
 
   const [idx, setIdx] = useState(0)
+
+  // Get events from localStorage
   const recordedEvents = events.sort((a, b) => {
     return a.created > b.created
   })
 
   useInterval(() => {
+    // Increment event index
     setIdx(idx + 1)
 
     if (idx >= 0 && idx < events.length) {
       const currEvent = recordedEvents[idx]
 
+      // As we increment through events, update the state
       switch (currEvent.type) {
         case eventTypes.CREATE:
           createTodo(currEvent.data)
@@ -38,16 +42,20 @@ export default ({ events = [], eventTypes, toggleIsPlaying }) => {
           break
       }
     } else if (idx >= events.length + 2) {
+      // Three seconds after replay has finished, redirect to TodoList
       toggleIsPlaying()
     }
   }, 1000)
 
-  const todos = Object.values(getTodos()).sort((a, b) => a.created > b.created)
+  // Get list of todos on screen
+  const todosList = Object.values(getTodos())
+  const orderedTodos = todosList.sort((a, b) => a.created > b.created)
 
   return (
     <div>
       <h3>Replay</h3>
-      {todos.map(({ name, description, id }) => {
+
+      {orderedTodos.map(({ name, description, id }) => {
         return (
           <TodoListItem
             disabled

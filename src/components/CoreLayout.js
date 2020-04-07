@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import TodoList from './TodoList'
-import RecordingManager from './RecordingManager'
+import RecordingToolbar from './RecordingToolbar'
 import { useRecorder } from '../hooks/useRecorder'
 import Events from '../Events'
 import Replay from './Replay'
@@ -11,46 +11,54 @@ export default () => {
   const [isPlaying, setIsPlaying] = useState(false)
   const toggleIsPlaying = () => setIsPlaying(!isPlaying)
 
-  const [
+  // Recording state manager
+  const {
     isRecordingRef,
     isRecording,
     startRecording,
     stopRecording,
-  ] = useRecorder(null)
+  } = useRecorder()
 
+  // Events manager for replay
   const [events, setEvents] = useState(null)
   useEffect(() => {
     setEvents(new Events(isRecordingRef))
   }, [])
 
+  const replayScreen = (
+    <Replay
+      events={events && events.getEvents()}
+      eventTypes={events && events.getTypes()}
+      toggleIsPlaying={toggleIsPlaying}
+    />
+  )
+
+  const onRecordingStarted = () => {
+    startRecording()
+    if (events) {
+      // Publish currently on screen todos for replay
+      events.clearEvents()
+      const initialListType = events.getTypes().INITIAL_LIST
+      events.addEvent(initialListType, getTodosLocal())
+    }
+  }
+
+  const onRecordingStopped = () => {
+    events.persist()
+    stopRecording()
+  }
+
   return (
     <div>
-      <RecordingManager
+      <RecordingToolbar
         isRecording={isRecording}
         isPlaying={isPlaying}
-        startRecording={() => {
-          startRecording()
-          events && events.clearEvents()
-          const initialListType = events.getTypes().INITIAL_LIST
-          events.addEvent(initialListType, getTodosLocal())
-        }}
-        stopRecording={() => {
-          events.persist()
-          stopRecording()
-        }
-        }
+        startRecording={onRecordingStarted}
+        stopRecording={onRecordingStopped}
         togglePlaying={toggleIsPlaying}
       />
 
-      {!isPlaying && <TodoList events={events} />}
-
-      {isPlaying && (
-        <Replay
-          events={events && events.getEvents()}
-          eventTypes={events.getTypes()}
-          toggleIsPlaying={toggleIsPlaying}
-        />
-      )}
+      {isPlaying ? replayScreen : <TodoList events={events} />}
     </div>
   )
 }
